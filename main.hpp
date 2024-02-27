@@ -23,14 +23,43 @@ Student *sortStudent(Student *head, int asc);
 
 Student *makeStudent(int N)
 {
-    /*******************************
-     * Code your program here
-     *******************************/
+    ifstream file("student.txt");
+    if (!file.is_open())
+    {
+        cerr << "Error: Unable to open file." << endl;
+        return nullptr;
+    }
+
+    Student *head = nullptr;
+    Student *current = nullptr;
+
+    for (int i = 0; i < N; ++i)
+    {
+        Student *newStudent = new Student();
+        file >> newStudent->id >> newStudent->name >> newStudent->score[0] >> newStudent->score[1];
+        newStudent->sum = newStudent->score[0] + newStudent->score[1];
+        newStudent->avg = newStudent->sum / NUMCOURSE;
+        newStudent->next = nullptr;
+
+        if (head == nullptr)
+        {
+            head = newStudent;
+            current = head;
+        }
+        else
+        {
+            current->next = newStudent;
+            current = newStudent;
+        }
+    }
+
+    file.close();
+    return head;
 }
 void printStudent(Student *head)
 {
     Student *ptr = head;
-    while (ptr != NULL)
+    while (ptr != nullptr)
     {
         cout << ptr->id << "\t";
         cout << ptr->name << "\t";
@@ -41,15 +70,18 @@ void printStudent(Student *head)
         ptr = ptr->next;
     }
     cout << endl;
-    /*******************************
-     * Code your program here
-     *******************************/
+
 }
 int getLength(Student *head)
 {
-    /*******************************
-     * Code your program here
-     *******************************/
+    int length = 0;
+    Student *ptr = head;
+    while (ptr != nullptr)
+    {
+        length++;
+        ptr = ptr->next;
+    }
+    return length;
 }
 Student *sortStudent(Student *head, int asc)
 {
