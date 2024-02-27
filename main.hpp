@@ -23,43 +23,43 @@ Student *sortStudent(Student *head, int asc);
 
 Student *makeStudent(int N)
 {
-    ifstream file("student.txt");
-    if (!file.is_open())
+    ifstream inputFile("student.txt");
+    if (!inputFile)
     {
         cerr << "Error: Unable to open file." << endl;
-        return nullptr;
+        exit(1);
     }
 
-    Student *head = nullptr;
-    Student *current = nullptr;
+    Student *head = NULL;
+    Student *prev = NULL;
 
     for (int i = 0; i < N; ++i)
     {
-        Student *newStudent = new Student();
-        file >> newStudent->id >> newStudent->name >> newStudent->score[0] >> newStudent->score[1];
+        Student *newStudent = new Student;
+        inputFile >> newStudent->id >> newStudent->name >> newStudent->score[0] >> newStudent->score[1];
         newStudent->sum = newStudent->score[0] + newStudent->score[1];
         newStudent->avg = newStudent->sum / NUMCOURSE;
         newStudent->next = nullptr;
 
-        if (head == nullptr)
+        if (prev)
         {
-            head = newStudent;
-            current = head;
+            prev->next = newStudent;
         }
         else
         {
-            current->next = newStudent;
-            current = newStudent;
+            head = newStudent;
         }
-    }
 
-    file.close();
+        prev = newStudent;
+    }
+    inputFile.close();
     return head;
 }
+
 void printStudent(Student *head)
 {
     Student *ptr = head;
-    while (ptr != nullptr)
+    while (ptr != NULL)
     {
         cout << ptr->id << "\t";
         cout << ptr->name << "\t";
@@ -70,13 +70,15 @@ void printStudent(Student *head)
         ptr = ptr->next;
     }
     cout << endl;
-
+    /*******************************
+     * Code your program here
+     *******************************/
 }
 int getLength(Student *head)
 {
     int length = 0;
     Student *ptr = head;
-    while (ptr != nullptr)
+    while (ptr != NULL)
     {
         length++;
         ptr = ptr->next;
@@ -85,8 +87,32 @@ int getLength(Student *head)
 }
 Student *sortStudent(Student *head, int asc)
 {
-    /*******************************
-     * Code your program here
-     *******************************/
-    return head;
+    int length = getLength(head);
+    Student *students[length];
+    Student *ptr = head;
+    for (int i = 0; i < length; ++i)
+    {
+        students[i] = ptr;
+        ptr = ptr->next;
+    }
+
+    if (asc)
+    {
+        sort(students, students + length, [](const Student *a, const Student *b) {
+            return a->sum < b->sum;
+        });
+    }
+    else
+    {
+        sort(students, students + length, [](const Student *a, const Student *b) {
+            return a->sum > b->sum;
+        });
+    }
+
+    for (int i = 0; i < length - 1; ++i){
+        students[i]->next = students[i + 1];
+    }
+    
+    students[length - 1]->next = nullptr;
+    return students[0];
 }
