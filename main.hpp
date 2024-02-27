@@ -23,7 +23,7 @@ Student *sortStudent(Student *head, int asc);
 
 Student *makeStudent(int N)
 {
-    ifstream inputFile("student.txt");
+    ifstream inputFile("students.txt");
     if (!inputFile)
     {
         cerr << "Error: Unable to open file." << endl;
@@ -112,7 +112,7 @@ Student *sortStudent(Student *head, int asc)
     for (int i = 0; i < length - 1; ++i){
         students[i]->next = students[i + 1];
     }
-    
+
     students[length - 1]->next = nullptr;
     return students[0];
 }
